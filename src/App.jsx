@@ -1,7 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
+import Home from './pages/Home';
 
-const Home = () => <h1 className="text-2xl font-bold">Página Início</h1>;
 const Agenda = () => <h1 className="text-2xl font-bold">Página Agenda</h1>;
 const Appointments = () => <h1 className="text-2xl font-bold">Página Agendamentos</h1>;
 const Professionals = () => <h1 className="text-2xl font-bold">Página Profissionais</h1>;
