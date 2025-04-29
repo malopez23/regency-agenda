@@ -5,33 +5,32 @@ import { Link } from 'react-router-dom';
 const Home = () => {
   const { appointments, clients, professionals, services } = useContext(AppContext);
   
-  // Estado para controle de carregamento
+ 
   const [loading, setLoading] = useState(true);
 
-  // Simular carregamento
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 1000); // 1 segundo de delay
+    }, 1000); 
     return () => clearTimeout(timer);
   }, []);
 
-  // Filtrar agendamentos de hoje (data atual: 2025-04-29)
+
   const todayAppointments = appointments.filter(
     (appt) => appt.date === "2025-04-29"
   );
 
-  // Calcular estatísticas
   const totalAppointmentsToday = todayAppointments.length;
   const totalClients = clients.length;
   const newClientsThisMonth = clients.filter(client => {
-    // Simulação: considerar "novo" se o ID for maior que um certo valor (ex.: últimos 12 clientes)
+    
     return client.id > Math.max(0, clients.length - 12);
   }).length;
-  const availableProfessionalsToday = professionals.length; // Simulação: todos estão disponíveis
-  const popularServices = services.length; // Simulação: todos são "populares"
+  const availableProfessionalsToday = professionals.length; 
+  const popularServices = services.length; 
 
-  // Exibir tela de carregamento enquanto loading for true
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -89,7 +88,7 @@ const Home = () => {
       {/* Card de Agendamentos de Hoje */}
       <div className="bg-white p-6 rounded-lg shadow-md">
         <h2 className="text-xl font-semibold text-gray-800 mb-4">
-          Agendamentos de Hoje (29/04/2025)
+          Agendamentos de Hoje
         </h2>
         {todayAppointments.length > 0 ? (
           <div className="space-y-4">
