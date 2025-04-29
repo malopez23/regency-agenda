@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { AppContext } from '../context/AppContext';
 
 const Clients = () => {
@@ -10,6 +10,16 @@ const Clients = () => {
   const [isEditing, setIsEditing] = useState(false);
   // Estado para controlar o modal
   const [showModal, setShowModal] = useState(false);
+  // Estado para controle de carregamento
+  const [loading, setLoading] = useState(true);
+
+  // Simular carregamento
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000); // 1 segundo de delay
+    return () => clearTimeout(timer);
+  }, []);
 
   // Função para adicionar ou editar um cliente
   const handleSubmit = (e) => {
@@ -48,6 +58,18 @@ const Clients = () => {
   const handleDelete = (id) => {
     setClients(clients.filter((client) => client.id !== id));
   };
+
+  // Exibir tela de carregamento enquanto loading for true
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="flex flex-col items-center">
+          <div className="w-12 h-12 border-4 border-[#68C3B7] border-t-transparent rounded-full animate-spin"></div>
+          <p className="mt-4 text-gray-600">Carregando...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -107,7 +129,7 @@ const Clients = () => {
         <div className="fixed inset-0 h-screen bg-gray-300 bg-opacity-30 flex items-center justify-center z-[60]">
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
             <h3 className="text-lg font-semibold text-gray-800 mb-4">
-              Cliente adicionado com sucesso!
+              Cliente concluído com sucesso!
             </h3>
             <button
               onClick={() => setShowModal(false)}

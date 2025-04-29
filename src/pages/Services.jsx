@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { AppContext } from '../context/AppContext';
 
 const Services = () => {
@@ -10,6 +10,16 @@ const Services = () => {
   const [isEditing, setIsEditing] = useState(false);
   // Estado para controlar o modal
   const [showModal, setShowModal] = useState(false);
+  // Estado para controle de carregamento
+  const [loading, setLoading] = useState(true);
+
+  // Simular carregamento
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000); // 1 segundo de delay
+    return () => clearTimeout(timer);
+  }, []);
 
   // Função para adicionar ou editar um serviço
   const handleSubmit = (e) => {
@@ -49,6 +59,18 @@ const Services = () => {
   const handleDelete = (id) => {
     setServices(services.filter((service) => service.id !== id));
   };
+
+  // Exibir tela de carregamento enquanto loading for true
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="flex flex-col items-center">
+          <div className="w-12 h-12 border-4 border-[#68C3B7] border-t-transparent rounded-full animate-spin"></div>
+          <p className="mt-4 text-gray-600">Carregando...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

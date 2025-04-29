@@ -1,25 +1,50 @@
-import { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { useContext, useState, useEffect } from 'react';
 import { AppContext } from '../context/AppContext';
+import { Link } from 'react-router-dom';
 
 const Home = () => {
-  // Usar dados do Context
-  const { professionals, services, appointments } = useContext(AppContext);
+  const { appointments, clients, professionals, services } = useContext(AppContext);
+  
+  // Estado para controle de carregamento
+  const [loading, setLoading] = useState(true);
 
-  // Dados fictícios para os cards de resumo (podemos atualizar isso depois)
-  const totalAgendamentos = appointments.length;
-  const clientes = 156; // Futuramente, virá de um estado global
-  const profissionais = professionals.length;
-  const servicos = services.length;
+  // Simular carregamento
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000); // 1 segundo de delay
+    return () => clearTimeout(timer);
+  }, []);
 
-  // Filtrar agendamentos de hoje (29/04/2025)
-  const agendamentosHoje = appointments.filter(
+  // Filtrar agendamentos de hoje (data atual: 2025-04-29)
+  const todayAppointments = appointments.filter(
     (appt) => appt.date === "2025-04-29"
   );
 
+  // Calcular estatísticas
+  const totalAppointmentsToday = todayAppointments.length;
+  const totalClients = clients.length;
+  const newClientsThisMonth = clients.filter(client => {
+    // Simulação: considerar "novo" se o ID for maior que um certo valor (ex.: últimos 12 clientes)
+    return client.id > Math.max(0, clients.length - 12);
+  }).length;
+  const availableProfessionalsToday = professionals.length; // Simulação: todos estão disponíveis
+  const popularServices = services.length; // Simulação: todos são "populares"
+
+  // Exibir tela de carregamento enquanto loading for true
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="flex flex-col items-center">
+          <div className="w-12 h-12 border-4 border-[#68C3B7] border-t-transparent rounded-full animate-spin"></div>
+          <p className="mt-4 text-gray-600">Carregando...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
-      {/* Título e Botão */}
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
         <Link
@@ -30,95 +55,79 @@ const Home = () => {
         </Link>
       </div>
 
-      {/* Resumo (Cards) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Blocos de Estatísticas */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        {/* Total de Agendamentos */}
         <div className="bg-white p-4 rounded-lg shadow-md">
           <h3 className="text-lg font-semibold text-gray-800">Total de Agendamentos</h3>
-          <p className="text-2xl font-bold text-[#68C3B7]">{totalAgendamentos}</p>
-          <p className="text-sm text-gray-500">{agendamentosHoje.length} hoje</p>
+          <p className="text-3xl font-bold text-[#68C3B7]">{appointments.length}</p>
+          <p className="text-sm text-gray-500">{totalAppointmentsToday} hoje</p>
         </div>
+
+        {/* Clientes */}
         <div className="bg-white p-4 rounded-lg shadow-md">
           <h3 className="text-lg font-semibold text-gray-800">Clientes</h3>
-          <p className="text-2xl font-bold text-[#68C3B7]">{clientes}</p>
-          <p className="text-sm text-gray-500">12 novos este mês</p>
+          <p className="text-3xl font-bold text-[#68C3B7]">{totalClients}</p>
+          <p className="text-sm text-gray-500">{newClientsThisMonth} novos este mês</p>
         </div>
+
+        {/* Profissionais */}
         <div className="bg-white p-4 rounded-lg shadow-md">
           <h3 className="text-lg font-semibold text-gray-800">Profissionais</h3>
-          <p className="text-2xl font-bold text-[#68C3B7]">{profissionais}</p>
-          <p className="text-sm text-gray-500">{profissionais - 2} disponíveis hoje</p>
+          <p className="text-3xl font-bold text-[#68C3B7]">{professionals.length}</p>
+          <p className="text-sm text-gray-500">{availableProfessionalsToday} disponíveis hoje</p>
         </div>
+
+        {/* Serviços */}
         <div className="bg-white p-4 rounded-lg shadow-md">
           <h3 className="text-lg font-semibold text-gray-800">Serviços</h3>
-          <p className="text-2xl font-bold text-[#68C3B7]">{servicos}</p>
-          <p className="text-sm text-gray-500">3 mais populares</p>
+          <p className="text-3xl font-bold text-[#68C3B7]">{services.length}</p>
+          <p className="text-sm text-gray-500">{popularServices} mais populares</p>
         </div>
       </div>
 
-      {/* Agendamentos de Hoje */}
+      {/* Card de Agendamentos de Hoje */}
       <div className="bg-white p-6 rounded-lg shadow-md">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">Agendamentos de Hoje</h2>
-        <div className="space-y-4">
-          {agendamentosHoje.length > 0 ? (
-            agendamentosHoje.map((agendamento) => (
+        <h2 className="text-xl font-semibold text-gray-800 mb-4">
+          Agendamentos de Hoje (29/04/2025)
+        </h2>
+        {todayAppointments.length > 0 ? (
+          <div className="space-y-4">
+            {todayAppointments.map((appointment) => (
               <div
-                key={agendamento.id}
-                className="grid grid-cols-3 gap-4 items-center p-4 border-b border-gray-200"
+                key={appointment.id}
+                className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center p-4 border-b border-gray-200"
               >
-                {/* Coluna Esquerda: Cliente e Serviço */}
-                <div>
-                  <p className="font-medium text-gray-800">{agendamento.clientName}</p>
-                  <p className="text-sm text-gray-500">{agendamento.service}</p>
+                <div className="md:col-span-2">
+                  <p className="font-medium text-gray-800">{appointment.clientName}</p>
+                  <p className="text-sm text-gray-500">
+                    Serviço: {appointment.service} | Profissional: {appointment.professional}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    Horário: {appointment.time}
+                  </p>
                 </div>
-                {/* Coluna Central: Horário e Profissional */}
-                <div className="text-center">
-                  <p className="font-medium text-gray-800">{agendamento.time}</p>
-                  <p className="text-sm text-gray-500">{agendamento.professional}</p>
-                </div>
-                {/* Coluna Direita: Status */}
-                <div className="text-right">
+                <div className="flex justify-end">
                   <span
                     className={`px-3 py-1 rounded-full text-sm ${
-                      agendamento.status === "Confirmado"
+                      appointment.status === "Confirmado"
                         ? "bg-green-100 text-green-800"
-                        : agendamento.status === "Concluído"
+                        : appointment.status === "Concluído"
                         ? "bg-blue-100 text-blue-800"
+                        : appointment.status === "Cancelado"
+                        ? "bg-red-100 text-red-800"
                         : "bg-yellow-100 text-yellow-800"
                     }`}
                   >
-                    {agendamento.status}
+                    {appointment.status}
                   </span>
                 </div>
               </div>
-            ))
-          ) : (
-            <p className="text-gray-600">Nenhum agendamento para hoje.</p>
-          )}
-        </div>
-      </div>
-
-      {/* Links de Navegação */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Link
-          to="/agenda"
-          className="bg-white p-4 rounded-lg shadow-md text-center hover:bg-gray-50 transition-colors"
-        >
-          <p className="text-lg font-semibold text-gray-800">Agenda</p>
-          <p className="text-sm text-gray-500">Visualize todos os agendamentos</p>
-        </Link>
-        <Link
-          to="/clients"
-          className="bg-white p-4 rounded-lg shadow-md text-center hover:bg-gray-50 transition-colors"
-        >
-          <p className="text-lg font-semibold text-gray-800">Clientes</p>
-          <p className="text-sm text-gray-500">Gerencie seus clientes</p>
-        </Link>
-        <Link
-          to="/services"
-          className="bg-white p-4 rounded-lg shadow-md text-center hover:bg-gray-50 transition-colors"
-        >
-          <p className="text-lg font-semibold text-gray-800">Serviços</p>
-          <p className="text-sm text-gray-500">Gerencie seus serviços</p>
-        </Link>
+            ))}
+          </div>
+        ) : (
+          <p className="text-gray-600">Nenhum agendamento para hoje.</p>
+        )}
       </div>
     </div>
   );
