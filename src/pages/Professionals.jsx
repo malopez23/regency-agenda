@@ -1,12 +1,9 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+import { AppContext } from '../context/AppContext';
 
 const Professionals = () => {
-  // Estado para gerenciar a lista de profissionais (dados fictícios)
-  const [professionals, setProfessionals] = useState([
-    { id: 1, name: "Ana Santos", specialty: "Corte e Coloração" },
-    { id: 2, name: "Carlos Oliveira", specialty: "Barba e Corte Masculino" },
-    { id: 3, name: "Beatriz Lima", specialty: "Manicure e Pedicure" },
-  ]);
+  // Usar dados do Context
+  const { professionals, setProfessionals } = useContext(AppContext);
 
   // Estado para o formulário de adicionar/editar
   const [formData, setFormData] = useState({ id: null, name: "", specialty: "" });
@@ -108,22 +105,24 @@ const Professionals = () => {
             {professionals.map((professional) => (
               <div
                 key={professional.id}
-                className="flex justify-between items-center p-4 border-b border-gray-200"
+                className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center p-4 border-b border-gray-200"
               >
-                <div>
+                <div className="md:col-span-2">
                   <p className="font-medium text-gray-800">{professional.name}</p>
-                  <p className="text-sm text-gray-500">{professional.specialty}</p>
+                  <p className="text-sm text-gray-500">
+                    Especialidade: {professional.specialty}
+                  </p>
                 </div>
-                <div className="space-x-2">
+                <div className="flex justify-end space-x-2">
                   <button
                     onClick={() => handleEdit(professional)}
-                    className="text-[#68C3B7] hover:text-[#5aa89d]"
+                    className="text-[#68C3B7] hover:text-[#5aa89d] px-2 py-1"
                   >
                     Editar
                   </button>
                   <button
                     onClick={() => handleDelete(professional.id)}
-                    className="text-red-600 hover:text-red-700"
+                    className="text-red-600 hover:text-red-700 px-2 py-1"
                   >
                     Remover
                   </button>

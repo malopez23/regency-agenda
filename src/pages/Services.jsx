@@ -1,12 +1,9 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+import { AppContext } from '../context/AppContext';
 
 const Services = () => {
-  // Estado para gerenciar a lista de serviços (dados fictícios)
-  const [services, setServices] = useState([
-    { id: 1, name: "Corte Feminino", duration: "45 minutos", price: "80,00" },
-    { id: 2, name: "Barba", duration: "30 minutos", price: "40,00" },
-    { id: 3, name: "Manicure", duration: "60 minutos", price: "50,00" },
-  ]);
+  // Usar dados do Context
+  const { services, setServices } = useContext(AppContext);
 
   // Estado para o formulário de adicionar/editar
   const [formData, setFormData] = useState({ id: null, name: "", duration: "", price: "" });
@@ -122,7 +119,7 @@ const Services = () => {
         <div className="fixed inset-0 h-screen bg-gray-300 bg-opacity-30 flex items-center justify-center z-[60]">
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
             <h3 className="text-lg font-semibold text-gray-800 mb-4">
-              Serviço adicionado com sucesso!
+              Serviço concluído com sucesso!
             </h3>
             <button
               onClick={() => setShowModal(false)}
