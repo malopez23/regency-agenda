@@ -17,7 +17,8 @@ const Home = () => {
     <div className="space-y-6">
       {/* Título e Botão */}
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
+        <h1 className="text-3xl font-bold text-gray-900">Resumo diário
+        </h1>
         <Link
           to="/appointments"
           className="bg-[#68C3B7] text-white px-4 py-2 rounded-lg hover:bg-[#5aa89d] transition-colors"
