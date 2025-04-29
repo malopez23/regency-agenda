@@ -4,9 +4,11 @@ import Home from './pages/Home';
 import Professionals from './pages/Professionals';
 import Services from './pages/Services';
 import Appointments from './pages/Appointments';
+import Clients from './pages/Clients';
+
 
 const Agenda = () => <h1 className="text-2xl font-bold">Página Agenda</h1>;
-const Clients = () => <h1 className="text-2xl font-bold">Página Clientes</h1>;
+// const Clients = () => <h1 className="text-2xl font-bold">Página Clientes</h1>;
 
 function App() {
   return (

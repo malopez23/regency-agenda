@@ -3,7 +3,7 @@ import { AppContext } from '../context/AppContext';
 
 const Appointments = () => {
   // Usar dados do Context
-  const { professionals, services, appointments, setAppointments } = useContext(AppContext);
+  const { professionals, services, clients, appointments, setAppointments } = useContext(AppContext);
 
   // Estado para o formulário de adicionar/editar
   const [formData, setFormData] = useState({
@@ -75,13 +75,19 @@ const Appointments = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">Nome do Cliente</label>
-            <input
-              type="text"
+            <select
               value={formData.clientName}
               onChange={(e) => setFormData({ ...formData, clientName: e.target.value })}
               className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-[#68C3B7] focus:border-[#68C3B7]"
               required
-            />
+            >
+              <option value="">Selecione um cliente</option>
+              {clients.map((client) => (
+                <option key={client.id} value={client.name}>
+                  {client.name}
+                </option>
+              ))}
+            </select>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">Serviço</label>

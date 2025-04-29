@@ -17,6 +17,13 @@ export const AppProvider = ({ children }) => {
     { id: 3, name: "Manicure", duration: "60 minutos", price: "50,00" },
   ]);
 
+  // Estado para gerenciar clientes
+  const [clients, setClients] = useState([
+    { id: 1, name: "Maria Silva", phone: "(11) 98765-4321" },
+    { id: 2, name: "João Pedro", phone: "(11) 91234-5678" },
+    { id: 3, name: "Paula Mendes", phone: "(11) 92345-6789" },
+  ]);
+
   // Estado para gerenciar agendamentos
   const [appointments, setAppointments] = useState([
     {
@@ -55,6 +62,8 @@ export const AppProvider = ({ children }) => {
         setProfessionals,
         services,
         setServices,
+        clients,
+        setClients,
         appointments,
         setAppointments,
       }}
