@@ -1,4 +1,4 @@
-# 💇‍♀️ Regency - Agenda Inteligênte
+# 💇‍♀️ Regency - Agenda Inteligente
 Uma aplicação web moderna para gerenciamento de agendamentos de um salão de beleza, com múltiplos profissionais, desenvolvida em React + Vite.
 
 ## ✨ Funcionalidades
