@@ -3,12 +3,13 @@ import { AppContext } from '../context/AppContext';
 
 const Appointments = () => {
   // Usar dados do Context
-  const { professionals, services, clients, appointments, setAppointments } = useContext(AppContext);
+  const { professionals, services, clients, setClients, appointments, setAppointments } = useContext(AppContext);
 
   // Estado para o formulário de adicionar/editar
   const [formData, setFormData] = useState({
     id: null,
     clientName: "",
+    clientPhone: "",
     service: "",
     professional: "",
     date: "",
@@ -18,15 +19,31 @@ const Appointments = () => {
   const [isEditing, setIsEditing] = useState(false);
   // Estado para controlar o modal
   const [showModal, setShowModal] = useState(false);
+  // Estado para controlar a escolha entre cliente existente e novo
+  const [clientOption, setClientOption] = useState("existing"); // "existing" ou "new"
 
   // Função para adicionar ou editar um agendamento
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    let finalClientName = formData.clientName;
+
+    // Se for um novo cliente, adicionar ao Context
+    if (clientOption === "new") {
+      const newClient = {
+        id: clients.length + 1,
+        name: formData.clientName,
+        phone: formData.clientPhone,
+      };
+      setClients([...clients, newClient]);
+      finalClientName = newClient.name;
+    }
+
     if (isEditing) {
       // Editar agendamento existente
       setAppointments(
         appointments.map((appt) =>
-          appt.id === formData.id ? { ...formData } : appt
+          appt.id === formData.id ? { ...formData, clientName: finalClientName } : appt
         )
       );
       setIsEditing(false);
@@ -34,26 +51,40 @@ const Appointments = () => {
       // Adicionar novo agendamento
       const newAppointment = {
         id: appointments.length + 1,
-        ...formData,
+        clientName: finalClientName,
+        service: formData.service,
+        professional: formData.professional,
+        date: formData.date,
+        time: formData.time,
+        status: formData.status,
       };
       setAppointments([...appointments, newAppointment]);
     }
+
     // Mostrar o modal após o envio
     setShowModal(true);
     setFormData({
       id: null,
       clientName: "",
+      clientPhone: "",
       service: "",
       professional: "",
       date: "",
       time: "",
       status: "Agendado",
     });
+    setClientOption("existing");
   };
 
   // Função para preencher o formulário ao editar
   const handleEdit = (appointment) => {
-    setFormData(appointment);
+    // Verificar se o cliente do agendamento existe na lista de clientes
+    const clientExists = clients.find((client) => client.name === appointment.clientName);
+    setFormData({
+      ...appointment,
+      clientPhone: clientExists ? clientExists.phone : "",
+    });
+    setClientOption(clientExists ? "existing" : "new");
     setIsEditing(true);
   };
 
@@ -73,22 +104,82 @@ const Appointments = () => {
           {isEditing ? "Editar Agendamento" : "Novo Agendamento"}
         </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Escolha entre cliente existente e novo */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">Nome do Cliente</label>
-            <select
-              value={formData.clientName}
-              onChange={(e) => setFormData({ ...formData, clientName: e.target.value })}
-              className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-[#68C3B7] focus:border-[#68C3B7]"
-              required
-            >
-              <option value="">Selecione um cliente</option>
-              {clients.map((client) => (
-                <option key={client.id} value={client.name}>
-                  {client.name}
-                </option>
-              ))}
-            </select>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Tipo de Cliente
+            </label>
+            <div className="flex space-x-4">
+              <label className="flex items-center">
+                <input
+                  type="radio"
+                  name="clientOption"
+                  value="existing"
+                  checked={clientOption === "existing"}
+                  onChange={() => setClientOption("existing")}
+                  className="mr-2 focus:ring-[#68C3B7]"
+                />
+                Selecionar cliente existente
+              </label>
+              <label className="flex items-center">
+                <input
+                  type="radio"
+                  name="clientOption"
+                  value="new"
+                  checked={clientOption === "new"}
+                  onChange={() => setClientOption("new")}
+                  className="mr-2 focus:ring-[#68C3B7]"
+                />
+                Cadastrar novo cliente
+              </label>
+            </div>
           </div>
+
+          {/* Campos de cliente */}
+          {clientOption === "existing" ? (
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Nome do Cliente</label>
+              <select
+                value={formData.clientName}
+                onChange={(e) => setFormData({ ...formData, clientName: e.target.value })}
+                className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-[#68C3B7] focus:border-[#68C3B7]"
+                required
+              >
+                <option value="">Selecione um cliente</option>
+                {clients.map((client) => (
+                  <option key={client.id} value={client.name}>
+                    {client.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          ) : (
+            <>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Nome do Cliente</label>
+                <input
+                  type="text"
+                  value={formData.clientName}
+                  onChange={(e) => setFormData({ ...formData, clientName: e.target.value })}
+                  className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-[#68C3B7] focus:border-[#68C3B7]"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">Telefone</label>
+                <input
+                  type="text"
+                  value={formData.clientPhone}
+                  onChange={(e) => setFormData({ ...formData, clientPhone: e.target.value })}
+                  className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-[#68C3B7] focus:border-[#68C3B7]"
+                  placeholder="Ex.: (11) 98765-4321"
+                  required
+                />
+              </div>
+            </>
+          )}
+
+          {/* Outros campos do formulário */}
           <div>
             <label className="block text-sm font-medium text-gray-700">Serviço</label>
             <select
@@ -169,12 +260,14 @@ const Appointments = () => {
                 setFormData({
                   id: null,
                   clientName: "",
+                  clientPhone: "",
                   service: "",
                   professional: "",
                   date: "",
                   time: "",
                   status: "Agendado",
                 });
+                setClientOption("existing");
               }}
               className="ml-2 bg-gray-300 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-400 transition-colors"
             >
