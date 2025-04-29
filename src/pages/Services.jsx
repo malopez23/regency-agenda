@@ -11,6 +11,8 @@ const Services = () => {
   // Estado para o formulário de adicionar/editar
   const [formData, setFormData] = useState({ id: null, name: "", duration: "", price: "" });
   const [isEditing, setIsEditing] = useState(false);
+  // Estado para controlar o modal
+  const [showModal, setShowModal] = useState(false);
 
   // Função para adicionar ou editar um serviço
   const handleSubmit = (e) => {
@@ -35,6 +37,8 @@ const Services = () => {
       };
       setServices([...services, newService]);
     }
+    // Mostrar o modal após o envio
+    setShowModal(true);
     setFormData({ id: null, name: "", duration: "", price: "" });
   };
 
@@ -112,6 +116,23 @@ const Services = () => {
           )}
         </form>
       </div>
+
+      {/* Modal de Confirmação */}
+      {showModal && (
+        <div className="fixed inset-0 h-screen bg-gray-300 bg-opacity-30 flex items-center justify-center z-[60]">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">
+              Serviço adicionado com sucesso!
+            </h3>
+            <button
+              onClick={() => setShowModal(false)}
+              className="bg-[#68C3B7] text-white px-4 py-2 rounded-lg hover:bg-[#5aa89d] transition-colors w-full"
+            >
+              Fechar
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Lista de Serviços */}
       <div className="bg-white p-6 rounded-lg shadow-md">
