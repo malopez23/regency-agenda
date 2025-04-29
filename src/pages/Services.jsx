@@ -1,0 +1,161 @@
+import { useState } from 'react';
+
+const Services = () => {
+  // Estado para gerenciar a lista de serviços (dados fictícios)
+  const [services, setServices] = useState([
+    { id: 1, name: "Corte Feminino", duration: "45 minutos", price: "80,00" },
+    { id: 2, name: "Barba", duration: "30 minutos", price: "40,00" },
+    { id: 3, name: "Manicure", duration: "60 minutos", price: "50,00" },
+  ]);
+
+  // Estado para o formulário de adicionar/editar
+  const [formData, setFormData] = useState({ id: null, name: "", duration: "", price: "" });
+  const [isEditing, setIsEditing] = useState(false);
+
+  // Função para adicionar ou editar um serviço
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (isEditing) {
+      // Editar serviço existente
+      setServices(
+        services.map((service) =>
+          service.id === formData.id
+            ? { ...service, name: formData.name, duration: formData.duration, price: formData.price }
+            : service
+        )
+      );
+      setIsEditing(false);
+    } else {
+      // Adicionar novo serviço
+      const newService = {
+        id: services.length + 1,
+        name: formData.name,
+        duration: formData.duration,
+        price: formData.price,
+      };
+      setServices([...services, newService]);
+    }
+    setFormData({ id: null, name: "", duration: "", price: "" });
+  };
+
+  // Função para preencher o formulário ao editar
+  const handleEdit = (service) => {
+    setFormData(service);
+    setIsEditing(true);
+  };
+
+  // Função para remover um serviço
+  const handleDelete = (id) => {
+    setServices(services.filter((service) => service.id !== id));
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Título */}
+      <h1 className="text-3xl font-bold text-gray-900">Serviços</h1>
+
+      {/* Formulário para Adicionar/Editar */}
+      <div className="bg-white p-6 rounded-lg shadow-md">
+        <h2 className="text-xl font-semibold text-gray-800 mb-4">
+          {isEditing ? "Editar Serviço" : "Adicionar Serviço"}
+        </h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Nome do Serviço</label>
+            <input
+              type="text"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-[#68C3B7] focus:border-[#68C3B7]"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Duração</label>
+            <input
+              type="text"
+              value={formData.duration}
+              onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
+              className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-[#68C3B7] focus:border-[#68C3B7]"
+              placeholder="Ex.: 45 minutos"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Preço (R$)</label>
+            <input
+              type="text"
+              value={formData.price}
+              onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+              className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-[#68C3B7] focus:border-[#68C3B7]"
+              placeholder="Ex.: 80,00"
+              required
+            />
+          </div>
+          <button
+            type="submit"
+            className="bg-[#68C3B7] text-white px-4 py-2 rounded-lg hover:bg-[#5aa89d] transition-colors"
+          >
+            {isEditing ? "Salvar Alterações" : "Adicionar Serviço"}
+          </button>
+          {isEditing && (
+            <button
+              type="button"
+              onClick={() => {
+                setIsEditing(false);
+                setFormData({ id: null, name: "", duration: "", price: "" });
+              }}
+              className="ml-2 bg-gray-300 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-400 transition-colors"
+            >
+              Cancelar
+            </button>
+          )}
+        </form>
+      </div>
+
+      {/* Lista de Serviços */}
+      <div className="bg-white p-6 rounded-lg shadow-md">
+        <h2 className="text-xl font-semibold text-gray-800 mb-4">Lista de Serviços</h2>
+        {services.length > 0 ? (
+          <div className="space-y-4">
+            {services.map((service) => (
+              <div
+                key={service.id}
+                className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center p-4 border-b border-gray-200"
+              >
+                {/* Informações do Serviço */}
+                <div className="md:col-span-2">
+                  <p className="font-medium text-gray-800">{service.name}</p>
+                  <div className="text-sm text-gray-500 flex flex-col md:flex-row md:space-x-2">
+                    <span>Duração: {service.duration}</span>
+                    <span className="hidden md:inline">|</span>
+                    <span>Preço: R$ {service.price}</span>
+                  </div>
+                </div>
+                {/* Botões Editar e Remover */}
+                <div className="flex justify-end space-x-2">
+                  <button
+                    onClick={() => handleEdit(service)}
+                    className="text-[#68C3B7] hover:text-[#5aa89d] px-2 py-1"
+                  >
+                    Editar
+                  </button>
+                  <button
+                    onClick={() => handleDelete(service.id)}
+                    className="text-red-600 hover:text-red-700 px-2 py-1"
+                  >
+                    Remover
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-gray-600">Nenhum serviço cadastrado.</p>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default Services;
